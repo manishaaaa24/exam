@@ -1,24 +1,11 @@
-pipeline {
-agent any
+FROM python:3.8-slim
 
-stages {
-stage('Clone Repository') {
-steps {
-git url: 'https://github.com/manishaaaa24/exam.git', branch: 'main'
-}
-}
+WORKDIR /app
 
-stage('Build Docker Image') {
-steps {
-bat 'docker build -t registration:v1 .'
-}
-}
+COPY . .
 
-stage('Run Docker Container') {
-steps {
-bat 'docker rm -f registration-container || exit 0'
-bat 'docker run -d -p 5000:5000 --name registration-container registration:v1'
-}
-}
-}
-}
+RUN pip install -r requirements.txt
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
